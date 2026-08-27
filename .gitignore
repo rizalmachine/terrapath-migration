@@ -1,0 +1,18 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Generated demo data (recreated by data_gen)
+data/*.duckdb
+!data/.gitkeep
+
+# Generated Redshift DDL (recreated by warehouse.ddl_generator)
+sql/generated/*.sql
+!sql/generated/.gitkeep
