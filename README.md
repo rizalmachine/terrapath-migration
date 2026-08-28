@@ -1,9 +1,9 @@
-# Kanopi Agritech — TerraPath Migration (demo)
+# Kanopi Agritech: TerraPath Migration (demo)
 
 > Fictional company, 100% synthetic data. A portfolio case study of a real
 > MySQL-to-Redshift migration I led the schema redesign and warehouse layer
-> for at my day job, as one product-area owner on a larger migration team —
-> same techniques, entirely fictional company, data, and scale.
+> for at my day job, as one product-area owner on a larger migration team,
+> using the same techniques on an entirely fictional company, data, and scale.
 
 A standalone migration accelerator: source OLTP -> a Redshift-shaped star
 schema, three change-tracking strategies applied deliberately, a rules-based
@@ -15,7 +15,7 @@ SQL without ever touching a real cluster.
 - **A migration accelerator, not just a migrated schema.** `warehouse/advisor.py`
   recommends DISTKEY/SORTKEY choices from real computed cardinality, and
   `warehouse/ddl_generator.py` turns that into actual, valid Redshift DDL +
-  COPY text — the kind of reusable tooling a migration team builds once and
+  COPY text: the kind of reusable tooling a migration team builds once and
   runs on every table, not a one-off script.
 - **A real bug that broke every point-in-time join, caught by its own test.**
   The first historical SCD2 load set `valid_from` to "now" instead of an
@@ -26,21 +26,21 @@ SQL without ever touching a real cluster.
 - **Three change-tracking strategies, chosen on purpose.** `dim_farmer`/
   `dim_plot` get true SCD2, `dim_certification` stays effective-dated (the
   source already knows its validity window), and three smaller dimensions
-  stay SCD1 — the same rule of thumb proven in a companion project's real
-  ADR, not three defaults applied at random.
+  stay SCD1. Same rule of thumb proven in a companion project's real ADR,
+  not three defaults applied at random.
 - **Row-count checks aren't enough, and this proves it.**
   `warehouse/validate.py`'s row-hash checksum catches a source mutation that
-  never bumps `updated_at` — invisible to watermark-based extraction alone,
-  caught immediately by the checksum.
-- **Deliberately kept messy, not smoothed over.** ~7% of plots have no GPS
-  survey yet, and ~2.5% of farmers are re-registration duplicates that
-  `dq_checks.py` flags but never silently merges — real migration data is
+  never bumps `updated_at`, invisible to watermark-based extraction alone
+  but caught immediately by the checksum.
+- **Deliberately kept messy, not smoothed over.** About 7% of plots have no GPS
+  survey yet, and about 2.5% of farmers are re-registration duplicates that
+  `dq_checks.py` flags but never silently merges. Real migration data is
   never clean, and pretending otherwise would make the demo less honest.
 
 ## Stack
 
 Python, pandas, DuckDB (embedded, standing in for both MySQL and Redshift),
-Faker, pytest. Zero AWS dependency — generated Redshift DDL is text only,
+Faker, pytest. Zero AWS dependency: generated Redshift DDL is text only,
 never executed.
 
 ## Quickstart
@@ -88,17 +88,17 @@ logs to `audit.pipeline_runs`; `validate` logs every check to
 
 ## Project layout
 
-- `warehouse/config.py` — single source of configuration: the `SOURCE_TABLES` registry, paths, seeds
-- `warehouse/extract.py` — watermark-based incremental extract, always-replace for small lookups
-- `warehouse/scd2.py` — shared SCD2 machinery + the point-in-time join
-- `warehouse/transform.py` — builds every dimension and both fact tables
-- `warehouse/dq_checks.py` — duplicate-farmer detector, standalone, not wired into the pipeline
-- `warehouse/advisor.py` — rules-based DISTKEY/SORTKEY recommender
-- `warehouse/ddl_generator.py` — emits real Redshift DDL + COPY text
-- `warehouse/validate.py` — row-count + checksum reconciliation
-- `warehouse/pipeline.py` — CLI orchestrator
-- `data_gen/` — synthetic source-system generation, including a second-wave activity simulator
-- `docs/adr/` — why things are built this way
+- `warehouse/config.py`: single source of configuration, the `SOURCE_TABLES` registry, paths, seeds
+- `warehouse/extract.py`: watermark-based incremental extract, always-replace for small lookups
+- `warehouse/scd2.py`: shared SCD2 machinery plus the point-in-time join
+- `warehouse/transform.py`: builds every dimension and both fact tables
+- `warehouse/dq_checks.py`: duplicate-farmer detector, standalone, not wired into the pipeline
+- `warehouse/advisor.py`: rules-based DISTKEY/SORTKEY recommender
+- `warehouse/ddl_generator.py`: emits real Redshift DDL and COPY text
+- `warehouse/validate.py`: row-count and checksum reconciliation
+- `warehouse/pipeline.py`: CLI orchestrator
+- `data_gen/`: synthetic source-system generation, including a second-wave activity simulator
+- `docs/adr/`: why things are built this way
 
 ## Tests
 
@@ -115,12 +115,12 @@ versioning, and a true no-op dry-run.
 
 ## Docs
 
-- [ADR-001 — Two DuckDB files stand in for MySQL and Redshift](docs/adr/001-duckdb-stand-in-for-redshift.md)
-- [ADR-002 — One config module, one SOURCE_TABLES registry](docs/adr/002-consolidated-config.md)
-- [ADR-003 — Synthetic data, seeded directly into the fictional source](docs/adr/003-synthetic-source-data.md)
-- [ADR-004 — Natural keys are coerced to str before any comparison](docs/adr/004-natural-key-coercion.md)
-- [ADR-005 — Three change-tracking strategies, on purpose](docs/adr/005-three-scd-strategies.md)
-- [ADR-006 — The DISTKEY/SORTKEY advisor is rules-based, not ML](docs/adr/006-rules-based-advisor.md)
+- [ADR-001: Two DuckDB files stand in for MySQL and Redshift](docs/adr/001-duckdb-stand-in-for-redshift.md)
+- [ADR-002: One config module, one SOURCE_TABLES registry](docs/adr/002-consolidated-config.md)
+- [ADR-003: Synthetic data, seeded directly into the fictional source](docs/adr/003-synthetic-source-data.md)
+- [ADR-004: Natural keys are coerced to str before any comparison](docs/adr/004-natural-key-coercion.md)
+- [ADR-005: Three change-tracking strategies, on purpose](docs/adr/005-three-scd-strategies.md)
+- [ADR-006: The DISTKEY/SORTKEY advisor is rules-based, not ML](docs/adr/006-rules-based-advisor.md)
 
 ## Privacy
 
@@ -128,6 +128,6 @@ versioning, and a true no-op dry-run.
 are entirely fictional.** This is a from-scratch case study of the
 schema-redesign and warehouse-layer techniques behind a real MySQL-to-Redshift
 migration I worked on professionally, as one product-area owner on a larger
-migration team — no code, data, credentials, or identifiers were copied from
+migration team. No code, data, credentials, or identifiers were copied from
 that system. Every row of data in this repo is generated by `data_gen/` at
 setup time.
